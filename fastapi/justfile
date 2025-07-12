@@ -4,15 +4,6 @@ default:
 run *args:
   poetry run uvicorn src.main:app --reload {{args}}
 
-mm *args:
-  poetry run alembic revision --autogenerate -m "{{args}}"
-
-migrate:
-  poetry run alembic upgrade head
-
-downgrade *args:
-  poetry run alembic downgrade {{args}}
-
 ruff *args:
   poetry run ruff check {{args}} src
 

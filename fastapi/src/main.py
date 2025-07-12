@@ -4,7 +4,9 @@ from typing import AsyncGenerator
 import sentry_sdk
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from fastapi_mcp import FastApiMCP
 
+from src.routes import cart, product
 from src.config import app_configs, settings
 
 
@@ -17,6 +19,7 @@ async def lifespan(_application: FastAPI) -> AsyncGenerator:
 
 app = FastAPI(**app_configs, lifespan=lifespan)
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -25,6 +28,16 @@ app.add_middleware(
     allow_methods=("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"),
     allow_headers=settings.CORS_HEADERS,
 )
+
+app.include_router(cart.router)
+app.include_router(product.router)
+
+mcp = FastApiMCP(
+    app,
+    name="Store MCP",
+)
+
+mcp.mount()
 
 if settings.ENVIRONMENT.is_deployed:
     sentry_sdk.init(
