@@ -1,0 +1,11 @@
+### Get all products
+GET http://localhost:8000/products
+Accept: application/json
+
+### Get a single product by ID
+POST http://localhost:8000/products/single-product
+Content-Type: application/json
+
+{
+  "id": 1
+}
