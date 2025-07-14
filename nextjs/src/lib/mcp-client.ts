@@ -42,8 +42,9 @@ export class MCPClient implements MCPClientInterface {
     this.headers = options.headers;
     this.onMessage =
       options.onMessage ||
-      ((message) =>
-        console.log("Message received:", JSON.stringify(message, null, 2)));
+      ((message) => {
+        // console.log("Message received:", JSON.stringify(message, null, 2));
+      });
     this.onError =
       options.onError ||
       ((error) => console.error("Error:", JSON.stringify(error, null, 2)));
@@ -155,6 +156,8 @@ export class MCPClient implements MCPClientInterface {
 
       // Cache the result
       this.toolsCache = toolsMap;
+
+      console.log("Tools fetched:", JSON.stringify(toolsMap, null, 2));
 
       return toolsMap;
     } catch (error) {

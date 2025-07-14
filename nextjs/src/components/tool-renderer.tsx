@@ -14,5 +14,6 @@ export function ToolRenderer() {
       <McpToolCall status={status} name={name} args={args} result={result} />
     ),
   });
+
   return null;
 }
