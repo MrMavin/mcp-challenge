@@ -16,48 +16,24 @@ interface Product {
 
 export function ChatShowProducts() {
   useCopilotAction({
-    name: "displayProductResults",
-    description: "Show products after MCP call, then stop.",
+    name: "showProducts",
+    description:
+      "Display products from the e-commerce store in a beautiful grid layout. Use this after fetching products from the MCP tool to show them to the user.",
     parameters: [
       {
         name: "products",
-        description: "List of products to show",
+        description:
+          "List of products to show in JSON format. Should be an array of product objects with id, title, price, description, category, and image fields.",
         type: "string",
         required: true,
       },
     ],
-    render: (props) => {
-      // We use ActionRenderProps type from CopilotKit for proper typing
-      // This approach avoids TypeScript errors while still maintaining type checking
-      // We didn't use a generic parameter since the parameters are already defined in the args array
-
-      // Extract products from arguments
-      const { products } = props.args;
+    render: ({ args, status }) => {
+      const { products } = args;
       let parsedProducts: Product[] = [];
-      let error = ""; // Track any parsing errors to display to user
+      let error = "";
 
-      // Parse the products string which should be JSON
-      try {
-        if (typeof products === "string") {
-          parsedProducts = JSON.parse(products);
-          if (!Array.isArray(parsedProducts)) {
-            parsedProducts = [parsedProducts]; // Handle single product case
-          }
-        } else if (Array.isArray(products)) {
-          // If it's already an array, use it directly
-          parsedProducts = products;
-        }
-      } catch (e: unknown) {
-        // Handle the error with proper type checking
-        if (e instanceof Error) {
-          error = `Error parsing products: ${e.message}`;
-        } else {
-          error = "Error parsing products: Unknown error";
-        }
-        console.error(error);
-      }
-
-      if (props.status === "inProgress" || props.status === "executing") {
+      if (status === "inProgress") {
         return (
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 max-w-xl mx-auto">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">
@@ -66,6 +42,24 @@ export function ChatShowProducts() {
             <p className="text-black">Loading products...</p>
           </div>
         );
+      }
+
+      try {
+        if (typeof products === "string") {
+          parsedProducts = JSON.parse(products);
+          if (!Array.isArray(parsedProducts)) {
+            parsedProducts = [parsedProducts];
+          }
+        } else if (Array.isArray(products)) {
+          parsedProducts = products;
+        }
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          error = `Error parsing products: ${e.message}`;
+        } else {
+          error = "Error parsing products: Unknown error";
+        }
+        console.error(error);
       }
 
       return (
@@ -95,7 +89,6 @@ export function ChatShowProducts() {
                       alt={product.title}
                       className="h-32 object-contain"
                       onError={(e) => {
-                        // Replace broken image with a placeholder
                         e.currentTarget.src =
                           "https://placehold.co/200x150?text=No+Image";
                         e.currentTarget.alt = "Image not available";

@@ -7,19 +7,21 @@ export function ChatAuthenticateUser() {
   const [userId, setUserId] = useState<number | null>(null);
 
   useCopilotReadable({
-    description: "The current user's id",
+    description:
+      "The current user's id. This is null if the user is not authenticated.",
     value: userId,
   });
 
   useCopilotReadable({
-    description: "The current user's username",
+    description:
+      "The current user's username. This is null if the user is not authenticated.",
     value: username,
   });
 
   useCopilotAction({
     name: "authenticateUser",
-    description: "Authenticates the user",
-
+    description:
+      "Authenticates the user. Show this when the user needs to log in or asks to log in.",
     renderAndWaitForResponse: ({ args, respond, status }) => {
       const [formUsername, setFormUsername] = useState("");
       const [formPassword, setFormPassword] = useState("");
