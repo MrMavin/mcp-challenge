@@ -10,7 +10,8 @@ All loggers share the same console handler & format so output is consistent acro
 import logging
 from functools import lru_cache
 
-_CONSOLE_FORMAT = "% (asctime)s | %(levelname)s | %(name)s | %(message)s"
+_CONSOLE_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+
 
 @lru_cache(maxsize=None)
 def _get_console_handler() -> logging.Handler:
@@ -18,6 +19,7 @@ def _get_console_handler() -> logging.Handler:
     formatter = logging.Formatter(_CONSOLE_FORMAT, datefmt="%Y-%m-%d %H:%M:%S")
     handler.setFormatter(formatter)
     return handler
+
 
 @lru_cache(maxsize=None)
 def get_logger(name: str = "root", level: int = logging.INFO) -> logging.Logger:

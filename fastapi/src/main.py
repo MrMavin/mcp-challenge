@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 import sentry_sdk
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from starlette.middleware.cors import CORSMiddleware
 from fastapi_mcp import FastApiMCP
 
@@ -19,7 +21,6 @@ async def lifespan(_application: FastAPI) -> AsyncGenerator:
 
 app = FastAPI(**app_configs, lifespan=lifespan)
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -32,9 +33,12 @@ app.add_middleware(
 app.include_router(cart.router)
 app.include_router(product.router)
 
+
 mcp = FastApiMCP(
     app,
     name="Store MCP",
+    describe_all_responses=False,
+    describe_full_response_schema=False
 )
 
 mcp.mount()
