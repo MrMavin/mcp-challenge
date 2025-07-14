@@ -6,7 +6,9 @@ import {
 } from "@copilotkit/runtime";
 import { MCPClient } from "@/lib/mcp-client";
 
-const serviceAdapter = new OpenAIAdapter();
+const serviceAdapter = new OpenAIAdapter({
+  model: "gpt-4.1",
+});
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const runtime = new CopilotRuntime({
@@ -21,6 +23,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await client.connect();
 
       return client;
+    },
+    middleware: {
+      onAfterRequest: ({ inputMessages, outputMessages }) => {
+        console.log(JSON.stringify({ inputMessages, outputMessages }, null, 2));
+      },
     },
   });
 
