@@ -1,10 +1,15 @@
 import { useCopilotAction } from "@copilotkit/react-core";
 import { useCopilotReadable } from "@copilotkit/react-core";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useChatStore } from "./state";
 
 export function ChatAuthenticateUser() {
   const { userId, username, setUsername, setUserId } = useChatStore();
+
+  const setUserData = useCallback((userId: string, username: string) => {
+    setUserId(userId);
+    setUsername(username);
+  }, []);
 
   useCopilotReadable({
     description:
@@ -33,8 +38,7 @@ export function ChatAuthenticateUser() {
 
         // Mock authentication delay
         setTimeout(() => {
-          setUsername(formUsername);
-          setUserId("1");
+          setUserData("1", formUsername);
 
           // Send response back to the action
           respond?.({

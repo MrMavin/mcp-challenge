@@ -1,9 +1,13 @@
 import { useCopilotAction } from "@copilotkit/react-core";
 import { useCopilotReadable } from "@copilotkit/react-core";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export function ChatCartIdStore() {
   const [cartId, setCartId] = useState<string | null>(null);
+
+  const updateCartId = useCallback((cartId: string) => {
+    setCartId(cartId);
+  }, []);
 
   useCopilotReadable({
     description:
@@ -24,8 +28,10 @@ export function ChatCartIdStore() {
       },
     ],
     render: ({ args, status }) => {
+      console.log(args);
       if (status === "complete" && args.cartId && cartId !== args.cartId) {
-        setCartId(args.cartId);
+        console.log("KEK");
+        updateCartId(args.cartId);
       }
 
       return <></>;

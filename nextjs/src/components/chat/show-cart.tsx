@@ -98,11 +98,13 @@ export function ChatShowCart() {
         // Enrich cart items with full product details
         if (parsedCart?.products) {
           enrichedItems = parsedCart.products.map((cartItem: CartItem) => {
-            const product = parsedProducts.find(p => p.id === cartItem.productId);
+            const product = parsedProducts.find(
+              (p) => p.id === cartItem.productId
+            );
             if (product) {
               return {
                 ...product,
-                quantity: cartItem.quantity
+                quantity: cartItem.quantity,
               };
             }
             // Fallback for missing product details
@@ -113,7 +115,7 @@ export function ChatShowCart() {
               description: "Product details not available",
               category: "Unknown",
               image: "",
-              quantity: cartItem.quantity
+              quantity: cartItem.quantity,
             };
           });
         }
@@ -129,7 +131,7 @@ export function ChatShowCart() {
       // Calculate total
       const calculateTotal = (items: EnrichedCartItem[]): number => {
         return items.reduce((total, item) => {
-          return total + (item.price * item.quantity);
+          return total + item.price * item.quantity;
         }, 0);
       };
 
@@ -137,7 +139,9 @@ export function ChatShowCart() {
 
       return (
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 max-w-2xl mx-auto">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Shopping Cart</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            Shopping Cart
+          </h2>
 
           {error && (
             <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
@@ -180,7 +184,9 @@ export function ChatShowCart() {
                           </div>
                         )}
                         <div className="flex-1">
-                          <h3 className="font-medium text-gray-900">{item.title}</h3>
+                          <h3 className="font-medium text-gray-900">
+                            {item.title}
+                          </h3>
                           <p className="text-sm text-gray-500 line-clamp-2 mt-1">
                             {item.description}
                           </p>
@@ -195,9 +201,11 @@ export function ChatShowCart() {
                             </div>
                             <div className="text-right">
                               <div className="text-sm text-gray-600">
-                                ${typeof item.price === "number"
+                                $
+                                {typeof item.price === "number"
                                   ? item.price.toFixed(2)
-                                  : item.price} each
+                                  : item.price}{" "}
+                                each
                               </div>
                               <div className="text-lg font-bold text-blue-600">
                                 ${(item.price * item.quantity).toFixed(2)}
@@ -213,7 +221,12 @@ export function ChatShowCart() {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-semibold text-gray-900">
-                        Total ({enrichedItems.reduce((sum, item) => sum + item.quantity, 0)} items):
+                        Total (
+                        {enrichedItems.reduce(
+                          (sum, item) => sum + item.quantity,
+                          0
+                        )}{" "}
+                        items):
                       </span>
                       <span className="text-2xl font-bold text-green-600">
                         ${total.toFixed(2)}
