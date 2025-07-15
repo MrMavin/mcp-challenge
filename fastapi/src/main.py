@@ -1,10 +1,8 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 import sentry_sdk
-from fastapi import FastAPI, Request, status
 from starlette.middleware.cors import CORSMiddleware
 from fastapi_mcp import FastApiMCP
 
