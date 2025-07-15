@@ -1,9 +1,9 @@
 ### Get all products
-GET http://localhost:8000/products
+GET http://localhost:3002/products
 Accept: application/json
 
 ### Get a single product by ID
-POST http://localhost:8000/products/single-product
+POST http://localhost:3002/products/single-product
 Content-Type: application/json
 
 {

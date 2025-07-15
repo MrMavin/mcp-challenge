@@ -1,17 +1,18 @@
 ### Get a cart by ID
-POST http://localhost:8000/carts/get-cart
+POST http://localhost:3002/carts/get-cart
 Content-Type: application/json
+Authorization: Bearer 11
 
 {
   "cartId": 1
 }
 
 ### Create a new cart
-POST http://localhost:8000/carts/manage-cart
+POST http://localhost:3002/carts/manage-cart
 Content-Type: application/json
+Authorization: Bearer 11
 
 {
-  "userId": 11,
   "products": [
     { "id": 1, "quantity": 2 },
     { "id": 2, "quantity": 1 }
@@ -19,14 +20,24 @@ Content-Type: application/json
 }
 
 ### Update an existing cart
-POST http://localhost:8000/carts/manage-cart
+POST http://localhost:3002/carts/manage-cart
 Content-Type: application/json
+Authorization: Bearer 5
 
 {
   "cartId": 1,
-  "userId": 5,
   "products": [
     { "id": 3, "quantity": 3 },
     { "id": 4, "quantity": 2 }
+  ]
+}
+
+### Test unauthenticated request (should fail)
+POST http://localhost:3002/carts/manage-cart
+Content-Type: application/json
+
+{
+  "products": [
+    { "id": 1, "quantity": 1 }
   ]
 }
