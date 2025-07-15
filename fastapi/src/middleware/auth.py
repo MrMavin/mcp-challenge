@@ -21,7 +21,6 @@ def extract_user_id_from_request(request: Request) -> int:
     auth_header = request.headers.get("Authorization")
 
     if not auth_header:
-        logger.warning("No authorization header provided")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication required. Please provide Authorization header with Bearer token."
@@ -39,7 +38,7 @@ def extract_user_id_from_request(request: Request) -> int:
 
     try:
         user_id = int(token)
-        logger.info(f"Authenticated user ID: {user_id}")
+
         return user_id
     except ValueError:
         logger.warning(f"Invalid user ID format in token: {token}")
