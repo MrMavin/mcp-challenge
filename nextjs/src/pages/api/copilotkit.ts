@@ -15,19 +15,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     createMCPClient: async (config) => {
       const client = new MCPClient({
         serverUrl: config.endpoint,
-        // Forward any headers provided by CopilotKit (e.g. auth tokens)
-        headers: (config as any).headers,
+        headers:
+          (config.apiKey && { Authorization: `Bearer ${config.apiKey}` }) || {},
       });
 
-      // Establish the SSE connection before CopilotKit starts querying tools
       await client.connect();
 
       return client;
-    },
-    middleware: {
-      onAfterRequest: ({ inputMessages, outputMessages }) => {
-        console.log(JSON.stringify({ inputMessages, outputMessages }, null, 2));
-      },
     },
   });
 

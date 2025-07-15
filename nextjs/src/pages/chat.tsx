@@ -5,11 +5,13 @@ import { ToolRenderer } from "@/components/tool-renderer";
 import { CopilotChat } from "@copilotkit/react-ui";
 import { ChatCartIdStore } from "@/components/chat/cart-id-store";
 import { ChatShowCart } from "@/components/chat/show-cart";
+import ChatShowSuggestions from "@/components/chat/show-suggestions";
 
 export default function ChatInterface() {
   return (
     <div className="flex h-screen p-4">
       <McpServerManager />
+      <ChatShowSuggestions />
       <ChatAuthenticateUser />
       <ChatShowProducts />
       <ChatShowCart />
