@@ -5,7 +5,7 @@ This service strictly follows the fakestoreapi.com API specification.
 """
 
 import requests
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Union
 from src.logger import get_logger
 
 logger = get_logger(__name__)
@@ -37,12 +37,14 @@ async def get_all_products() -> List[Dict[str, Any]]:
         requests.HTTPError: If request fails
     """
     try:
-        logger.info("Fetching all products from fakestoreapi.com")
         response = requests.get(f"{BASE_URL}/products")
+
         response.raise_for_status()
+
         return response.json()
     except requests.RequestException as e:
         logger.error(f"Error fetching all products: {e}")
+
         raise
 
 
@@ -73,10 +75,12 @@ async def get_product(product_id: Union[int, str]) -> Dict[str, Any]:
         requests.HTTPError: If product not found (404) or other HTTP errors
     """
     try:
-        logger.info(f"Fetching product {product_id} from fakestoreapi.com")
         response = requests.get(f"{BASE_URL}/products/{product_id}")
+
         response.raise_for_status()
+
         return response.json()
     except requests.RequestException as e:
         logger.error(f"Error fetching product {product_id}: {e}")
+
         raise
