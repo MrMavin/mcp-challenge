@@ -1,10 +1,10 @@
 import { useCopilotAction } from "@copilotkit/react-core";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import { useState } from "react";
+import { useChatStore } from "./state";
 
 export function ChatAuthenticateUser() {
-  const [username, setUsername] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number | null>(null);
+  const { userId, username, setUsername, setUserId } = useChatStore();
 
   useCopilotReadable({
     description:
@@ -34,12 +34,12 @@ export function ChatAuthenticateUser() {
         // Mock authentication delay
         setTimeout(() => {
           setUsername(formUsername);
-          setUserId(1);
+          setUserId("1");
 
           // Send response back to the action
           respond?.({
             username: formUsername,
-            userId: 11,
+            userId: "1",
           });
 
           setIsLoading(false);
@@ -129,7 +129,6 @@ export function ChatAuthenticateUser() {
         );
       }
 
-      // status === "complete"
       return (
         <div className="p-4 max-w-sm mx-auto rounded-lg border border-green-200 shadow-sm bg-green-50">
           <div className="flex items-center">

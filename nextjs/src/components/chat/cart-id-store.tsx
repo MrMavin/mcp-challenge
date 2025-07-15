@@ -7,10 +7,10 @@ export function ChatCartIdStore() {
 
   useCopilotReadable({
     description:
-      "The current user's cart id. This is null if the cart has not been created.",
+      "Store the current user's cart id after creating a cart. This is null if the cart has not been created.",
     value: cartId,
   });
-  console.log(cartId);
+
   useCopilotAction({
     name: "storeCartId",
     description:
