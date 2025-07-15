@@ -4,29 +4,6 @@ from typing import Any, List, Dict
 from fastapi import HTTPException, status
 
 
-def validate_user_id(user_id: Any) -> int:
-    """Validate user ID with detailed error messages."""
-    if user_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="userId is required and cannot be null"
-        )
-
-    if not isinstance(user_id, (int, str)):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"userId must be an integer or string, got {type(user_id).__name__}"
-        )
-
-    try:
-        return int(user_id)
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"userId must be a valid integer, got '{user_id}'"
-        )
-
-
 def validate_cart_id(cart_id: Any) -> int | str:
     """Validate cart ID with detailed error messages."""
     if cart_id is None:
