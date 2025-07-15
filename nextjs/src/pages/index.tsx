@@ -1,9 +1,12 @@
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
 
-  router.push("/chat");
+  useEffect(() => {
+    router.push("/chat");
+  }, [router]);
 
   return null;
 }

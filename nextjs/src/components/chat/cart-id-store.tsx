@@ -24,7 +24,7 @@ export function ChatCartIdStore() {
       },
     ],
     render: ({ args, status }) => {
-      if (status === "complete") {
+      if (status === "complete" && args.cartId && cartId !== args.cartId) {
         setCartId(args.cartId);
       }
 
