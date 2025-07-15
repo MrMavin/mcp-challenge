@@ -18,10 +18,6 @@ export interface McpClientOptions {
  * This class implements the Model Context Protocol (MCP) client, which allows for
  * standardized communication with MCP servers. It's designed to be compatible with
  * CopilotKit's runtime by exposing the required interface.
- *
- * The main methods required by CopilotKit are:
- * - tools(): Returns a map of tool names to MCPTool objects
- * - close(): Closes the connection to the MCP server
  */
 export class MCPClient implements MCPClientInterface {
   private client: Client;
@@ -38,21 +34,44 @@ export class MCPClient implements MCPClientInterface {
   private toolsCache: Record<string, MCPTool> | null = null;
 
   constructor(options: McpClientOptions) {
+    const isDebug = process.env.DEBUG === "true";
+
     this.serverUrl = new URL(options.serverUrl);
     this.headers = options.headers;
+
     this.onMessage =
       options.onMessage ||
       ((message) => {
-        // console.log("Message received:", JSON.stringify(message, null, 2));
+        if (isDebug) {
+          console.log("Message received:", JSON.stringify(message, null, 2));
+        }
       });
+
     this.onError =
       options.onError ||
       ((error) => console.error("Error:", JSON.stringify(error, null, 2)));
-    this.onOpen = options.onOpen || (() => console.log("Connection opened"));
-    this.onClose = options.onClose || (() => console.log("Connection closed"));
+
+    this.onOpen =
+      options.onOpen ||
+      (() => {
+        if (isDebug) {
+          console.log("Connection opened");
+        }
+      });
+    this.onClose =
+      options.onClose ||
+      (() => {
+        if (isDebug) {
+          console.log("Connection closed");
+        }
+      });
 
     // Initialize the SSE transport with headers
-    this.transport = new SSEClientTransport(this.serverUrl, this.headers);
+    this.transport = new SSEClientTransport(this.serverUrl, {
+      requestInit: {
+        headers: this.headers,
+      },
+    });
 
     // Initialize the client
     this.client = new Client({
@@ -82,7 +101,6 @@ export class MCPClient implements MCPClientInterface {
     this.onError(error);
     if (this.isConnected) {
       this.isConnected = false;
-      // Could implement reconnection logic here
     }
   }
 
@@ -91,19 +109,11 @@ export class MCPClient implements MCPClientInterface {
     this.onClose();
   }
 
-  /**
-   * Connects to the MCP server using SSE
-   */
   public async connect(): Promise<void> {
     try {
-      console.log("Connecting to MCP server:", this.serverUrl.href);
-
-      // Connect the client (which connects the transport)
       await this.client.connect(this.transport);
 
       this.isConnected = true;
-
-      console.log("Connected to MCP server");
 
       this.onOpen();
     } catch (error) {
@@ -115,18 +125,14 @@ export class MCPClient implements MCPClientInterface {
     }
   }
 
-  /**
-   * Returns a map of tool names to MCPTool objects
-   * This method matches the expected CopilotKit interface
-   */
   public async tools(): Promise<Record<string, MCPTool>> {
     try {
-      // Return from cache if available
       if (this.toolsCache) {
         return this.toolsCache;
       }
 
-      // Fetch raw tools data
+      // we are getting tools from the mcp server that
+      // will later be standardized to our internal format
       const rawToolsResult = await this.client.listTools();
 
       let toolsToProcess: object[] = [];
@@ -141,7 +147,6 @@ export class MCPClient implements MCPClientInterface {
         throw new Error("No tools found");
       }
 
-      // Transform to the expected format
       const toolsMap: Record<string, MCPTool> = {};
 
       toolsToProcess.forEach((tool: any) => {
@@ -154,32 +159,16 @@ export class MCPClient implements MCPClientInterface {
         };
       });
 
-      // Cache the result
       this.toolsCache = toolsMap;
-
-      console.log("Tools fetched:", JSON.stringify(toolsMap, null, 2));
 
       return toolsMap;
     } catch (error) {
       console.error("Error fetching tools:", error);
-      // Return empty map on error rather than throwing
       return {};
     }
   }
 
-  /**
-   * Close the connection to the MCP server
-   * This method matches the expected CopilotKit interface
-   */
   public async close(): Promise<void> {
-    return this.disconnect();
-  }
-
-  /**
-   * Disconnects from the MCP server
-   * (Legacy method, prefer using close() for compatibility with CopilotKit)
-   */
-  public async disconnect(): Promise<void> {
     try {
       // Clear the tools cache
       this.toolsCache = null;
@@ -194,33 +183,13 @@ export class MCPClient implements MCPClientInterface {
     }
   }
 
-  /**
-   * Call a tool with the given name and arguments
-   * @param name Tool name
-   * @param args Tool arguments
-   * @returns Tool execution result
-   */
   public async callTool(
     name: string,
     args: Record<string, unknown>
   ): Promise<any> {
     try {
-      console.log(
-        `Calling tool: ${name} with original args:`,
-        JSON.stringify(args, null, 2)
-      );
-
-      // UNIFIED ARGUMENT PROCESSING
-      // This single method replaces the previous complex processing chain
-      // for better maintainability and predictability
       const processedArgs = this.processToolArguments(args);
 
-      console.log(
-        `Processed args for ${name}:`,
-        JSON.stringify(processedArgs, null, 2)
-      );
-
-      // Call the tool with processed arguments
       return this.client.callTool({
         name: name,
         arguments: processedArgs,
@@ -243,7 +212,6 @@ export class MCPClient implements MCPClientInterface {
   private processToolArguments(
     args: Record<string, unknown>
   ): Record<string, unknown> {
-    // Create a clean result object to build up properly
     const result: Record<string, unknown> = {};
 
     // Step 1: Extract and flatten any params objects
