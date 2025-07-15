@@ -136,3 +136,22 @@ Authorization: {{authToken}}
 {
     "id": null
 }
+
+### ========================
+### Multiple Error Testing
+### ========================
+
+### Test Multiple Errors - General LLM-friendly messages
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": [
+        {"id": 1, "quantity": 2},
+        {"id": "invalid-id", "quantity": 0},
+        {"quantity": 1},
+        "not-an-object",
+        {"id": 5, "quantity": "invalid-quantity"}
+    ]
+}
