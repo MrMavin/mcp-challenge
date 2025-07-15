@@ -2,7 +2,7 @@ default:
   just --list
 
 run *args:
-  poetry run uvicorn src.main:app --reload {{args}}
+  poetry run uvicorn src.main:app --reload --port ${PORT:-3002} {{args}}
 
 ruff *args:
   poetry run ruff check {{args}} src
