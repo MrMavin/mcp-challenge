@@ -2,17 +2,21 @@
 
 import { useCopilotChat } from "@copilotkit/react-core";
 import { useEffect } from "react";
+import { useChatStore } from "./chat/state";
 
 function McpServerManager() {
-  const { setMcpServers, mcpServers } = useCopilotChat();
+  const { userId } = useChatStore();
+
+  const { setMcpServers } = useCopilotChat();
 
   useEffect(() => {
     setMcpServers([
       {
-        endpoint: "http://localhost:8000/mcp",
+        endpoint: process.env.NEXT_PUBLIC_MCP_ENDPOINT!,
+        apiKey: userId!,
       },
     ]);
-  }, [setMcpServers]);
+  }, [setMcpServers, userId]);
 
   return null;
 }

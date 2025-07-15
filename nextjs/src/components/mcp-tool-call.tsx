@@ -17,7 +17,6 @@ export default function MCPToolCall({
 }: ToolCallProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // Format content for display
   const format = (content: any): string => {
     if (!content) return "";
     const text =
