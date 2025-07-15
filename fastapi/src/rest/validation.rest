@@ -1,0 +1,138 @@
+### FastAPI Validation Testing
+### This file tests the most important validation scenarios
+
+@baseUrl = http://localhost:3002
+@contentType = application/json
+@authToken = Bearer 1
+
+### ========================
+### Authentication Tests
+### ========================
+
+### Test Authentication - Missing Token
+POST {{baseUrl}}/carts/get-cart
+Content-Type: {{contentType}}
+
+{
+    "cartId": 1
+}
+
+### ========================
+### Cart ID Validation Tests
+### ========================
+
+### Test Cart ID - Missing cartId field
+POST {{baseUrl}}/carts/get-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "wrongField": 1
+}
+
+### Test Cart ID - Null cartId
+POST {{baseUrl}}/carts/get-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "cartId": null
+}
+
+### Test Cart ID - Invalid type (array)
+POST {{baseUrl}}/carts/get-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "cartId": [1, 2, 3]
+}
+
+### ========================
+### Product Validation Tests
+### ========================
+
+### Test Products - Missing products field
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "cartId": 1
+}
+
+### Test Products - Products is not an array
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": "not an array"
+}
+
+### Test Products - Product missing id field
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": [{"quantity": 2}]
+}
+
+### Test Products - Product id is invalid string
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": [{"id": "not-a-number", "quantity": 2}]
+}
+
+### Test Products - Product quantity is zero
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": [{"id": 1, "quantity": 0}]
+}
+
+### Test Products - Product quantity is negative
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": [{"id": 1, "quantity": -1}]
+}
+
+### Test Products - Product quantity is invalid string
+POST {{baseUrl}}/carts/manage-cart
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "products": [{"id": 1, "quantity": "not-a-number"}]
+}
+
+### ========================
+### Product ID Validation Tests
+### ========================
+
+### Test Product ID - Missing productId field
+POST {{baseUrl}}/products/single-product
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "wrongField": 1
+}
+
+### Test Product ID - Null productId
+POST {{baseUrl}}/products/single-product
+Content-Type: {{contentType}}
+Authorization: {{authToken}}
+
+{
+    "id": null
+}
