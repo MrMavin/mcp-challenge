@@ -52,7 +52,7 @@ The backend is built with FastAPI and implements an MCP server with FastAPI-MCP 
 
 ##### FakeStoreAPI wrapper with smart endpoints
 
-As FakeStoreAPI has misalignments between request expectations and actual requirements, which make the LLM to send invalid requests and going crazy, we implemented a wrapper with smart endpoints to manage the cart.
+As FakeStoreAPI has misalignments between request expectations and actual requirements, which make the LLM to send invalid requests and going crazy. We implemented a wrapper with smart endpoints to manage the cart.
 
 ##### Custom validation for routes
 
