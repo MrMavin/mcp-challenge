@@ -6,6 +6,10 @@ import { useChatStore } from "./state";
 export function ChatAuthenticateUser() {
   const { userId, username, setUsername, setUserId } = useChatStore();
 
+  const [formUsername, setFormUsername] = useState("");
+  const [formPassword, setFormPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const setUserData = useCallback((userId: string, username: string) => {
     setUserId(userId);
     setUsername(username);
@@ -27,11 +31,7 @@ export function ChatAuthenticateUser() {
     name: "authenticateUser",
     description:
       "Authenticates the user. Show this when the user needs to log in or asks to log in.",
-    renderAndWaitForResponse: ({ args, respond, status }) => {
-      const [formUsername, setFormUsername] = useState("");
-      const [formPassword, setFormPassword] = useState("");
-      const [isLoading, setIsLoading] = useState(false);
-
+    renderAndWaitForResponse: ({ respond, status }) => {
       // Handle successful authentication
       const handleAuthentication = () => {
         setIsLoading(true);
